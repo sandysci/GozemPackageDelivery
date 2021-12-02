@@ -1,14 +1,14 @@
-BACKEND LEAGUE CHALLENGE CSV MATRIX 
+Gozem Package Delivery CHALLENGE 
 ===========
-League csv-matrix - This is the solution for league backend challenge
+Gozem Package Delivery - This is the solution for Gozem Package Delivery backend challenge
 ---------------
 Live API BaseUrl: https://csvmatrix.herokuapp.com/
 
 ## Installation
 ```
 - Open terminal or command prompt
-- install npm ( >= version 6)
-- install node js (>= version 14)
+- install npm ( >= version 8)
+- install node js (>= version 16)
 - confirm installation of node and npm with this commands(node -v and npm -v)
 - install git on local machine
 - clone project using this command git clone https://github.com/sandysci/MatrixLeague.git

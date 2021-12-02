@@ -16,6 +16,8 @@ app.use(express.urlencoded({ extended: false }));
 // set up express for file upload
 
 app.use('/', require('./src/routes/index'));
+app.use('/api/', require('./src/routes'));
+
 
 // Returns if route is not found
 app.use(function (req, res) {

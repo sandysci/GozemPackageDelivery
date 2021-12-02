@@ -10,10 +10,7 @@ const myCache = new NodeCache();
  * @returns {*}
  */
 global.successResponse = (res, data, code = 200) => {
-    return res.status(code).send(
-        data
-
-    );
+    return res.status(code).send({data});
 };
 /***
  * returns the success response in text format

@@ -14,6 +14,7 @@ class PubSubManager {
     }
     subscribe(subscriber, channel) {
         console.log(`subscribing to ${channel}`);
+        console.log(`subscribe value ${subscriber}`);
         this.channels[channel].subscribers.push(subscriber);
     }
 
@@ -26,6 +27,7 @@ class PubSubManager {
     }
 
     broker() {
+        // console.log("subscriber channel list",this.channels);
         for (const channel in this.channels) {
             if (this.channels.hasOwnProperty(channel)) {
                 const channelObj = this.channels[channel];

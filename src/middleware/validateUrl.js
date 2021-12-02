@@ -38,18 +38,14 @@ exports.validateDataType = async (req, res, next) => {
 
         const data = req.body;
 
-        const schema = Joi.object().keys({
-            topic: Joi.string().required(),
-            data: Joi.required(),
-
-        });
+        const schema = Joi.object().required();
 
         const result = schema.validate(data,  {
             allowUnknown: true
         });
 
         if(result.error)
-            return  result.error.details[0].message.replace(/['"]/g, '');
+            return  errorResponse (res,result.error.details[0].message.replace(/['"]/g, ''),401);
 
         return next();
     } catch (e) {

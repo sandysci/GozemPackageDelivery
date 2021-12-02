@@ -3,6 +3,7 @@
 const app = require('./app');
 const debug = require('debug')(process.env.DEBUG);
 const http = require('http');
+require("./src/startups/database");
 const {log} = console;
 
 const server = http.createServer(app);

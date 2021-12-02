@@ -1,17 +1,14 @@
 var express = require('express');
 var router = express.Router();
-const topicSubscriptionController = require("../app/TopicSubscriptionController");
-const {validateUrlType,validateDataType} = require("../middleware/validateUrl");
 
 /* GET base route. */
 router.get('/', function(req, res, next) {
-  res.json( {title: `Topic Subscription`});
+  res.json( {title: `Gozem Backend Package Delivery`});
 });
 
-/* subscribe to a topic. */
-router.post('/subscribe/:topic',validateUrlType,topicSubscriptionController.subscribe);
-router.post('/publish/:topic',validateDataType,topicSubscriptionController.publish);
 
+router.use("/package", require("./v1/packages"));
+router.use("/delivery", require("./v1/deliveries"));
 
 
 module.exports = router;

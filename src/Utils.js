@@ -1,19 +1,8 @@
 "use strict";
 
-const WebSocket = require('ws');
 exports.connectandSubscribeWebsocket = async (topic,url) => {
     try {
 
-
-        var ws = new WebSocket('ws://localhost:8080');
-        ws.onopen = function () {
-            ws.send(JSON.stringify({
-                request: 'SUBSCRIBE',
-                message: '',
-                channel: topic
-            }));
-
-        };
         await addUrlTOCache(topic,url);
         return {
             data:{
@@ -37,20 +26,10 @@ exports.connectandSubscribeWebsocket = async (topic,url) => {
 exports.connectandPublishWebsocket = async (topic,message) => {
     try {
 
-        var ws = new WebSocket('ws://localhost:8080');
-        ws.onopen = function () {
-            ws.send(JSON.stringify({
-                request: 'PUBLISH',
-                message: message,
-                channel: topic
-            }));
-
-        };
-        await addUrlTOCache(topic,url);
+        let data =  getCache(topic);
         return {
             data:{
-                url,
-                topic
+                data
             }
         };
 
@@ -74,4 +53,10 @@ async function  addUrlTOCache(key,value){
         val.push(value);
         setCache(key, val);
     }
+}
+
+
+async function  getUrlFromCache(key){
+    return getCache(key);
+
 }
