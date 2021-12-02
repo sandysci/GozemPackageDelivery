@@ -88,10 +88,10 @@ npm install
 npm run test
 ```
 
-#### Contributors
+#### BIO
 
-- [Repository](https://github.com/sandysci/MatrixLeague.git)
+- [Repository](https://github.com/sandysci/GozemPackageDelivery)
 
 - [Ezeibe Sandra Chioma Profile](https://queenofcodes.herokuapp.com)
 
-- [API BASEURL LIVE](https://csvmatrix.herokuapp.com/)
+- [API BASEURL LIVE]( https://gozem-package-delivery.herokuapp.com/)
