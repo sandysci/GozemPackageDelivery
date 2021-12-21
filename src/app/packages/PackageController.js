@@ -14,7 +14,7 @@ exports.getPackageById = async (req,res) =>{
     const {id} = req.params;
     if(!id) return  errorResponse(res,"id must be passed");
 
-    const {data, error} = await packageRespository.fetchByIdPackages(id);
+    const {data, error} = await packageRespository.fetchByPackageId(id);
     console.log("response",error,data);
     if(error)
         return errorResponse(res,error);

@@ -4,9 +4,14 @@ const app = require('./app');
 const debug = require('debug')(process.env.DEBUG);
 const http = require('http');
 require("./src/startups/database");
-const {log} = console;
+const { log: logger } = console;
+const deliveryRespository = require("./src/app/deliveries/DeliveryRepository");
 
 const server = http.createServer(app);
+const { Server } = require("socket.io");
+const io = new Server(server);
+
+let socket = null;
 
 /**
  * Normalize a port into a number, string, or false.
@@ -56,59 +61,66 @@ function onError(error,port) {
     }
 }
 
+
 /**
  * Event listener for HTTP server "listening" event.
  */
 
-const setupWebSocket = async ()=>{
-    const WebSocketServer = require('ws').Server;
-    const PubSubManager = require('./pubsub');
-    const pubSubManager = new PubSubManager();
-    const wss = new WebSocketServer({ server: server });
-    wss.on('connection', (ws, req) => {
-        console.log(`Connection request from: ${req.connection.remoteAddress}`);
-        ws.on('message', (data) => {
-            console.log('data: ' + data);
-            const json = JSON.parse(data);
-            const request = json.request;
-            const message = json.message;
-            const channel = json.channel;
+const setupWebSocketio = async ()=>{
+    socket = null;
+    start();
 
-            switch (request) {
-                case 'PUBLISH':
-                    pubSubManager.publish(ws, channel, message);
-                    break;
-                case 'SUBSCRIBE':
-                    pubSubManager.subscribe(ws, channel);
-                    break;
-            }
-        });
-        ws.on('close', () => {
-            console.log('Stopping client connection.');
-        });
-    });
 }
 
+exports.emit =( eventName, payload) =>{
+    if (!socket) {
+        // eslint-disable-next-line no-console
+        console.error('Socket not connected. Please start socket connection');
+    } else {
+        socket.broadcast.emit(eventName, payload);
+    }
+}
+
+const start = ()=> {
+    logger('Gozem Socket Server started successfully.');
+    io.on('connection', (sock) => {
+        logger('Socket connected successfully');
+        logger('Socket session with id', [sock.id], ' started a connection');
+        socket = sock;
+        app.use(function (req, res) {
+            req.body.socketId=sock.id;
+            logger("Req Body socket",req.body);
+        });
+
+        sock.on('location_changed', (payload) => {
+            deliveryRespository.updateByDeliveryId(payload?.delivery_id,{location:payload?.location});
+            console.log('message: ' + payload);
+        });
+        sock.on('status_changed', (payload) => {
+            // {event, delivery_id, status}
+            deliveryRespository.updateByDeliveryId(payload?.delivery_id,{status:payload?.status});
+            console.log('message: ' + payload);
+        });
+
+
+
+
+    });
+    io.on('disconnect', () => {
+        logger('user disconnected');
+    });
+}
 const setupExpress = async () => {
 
-    /**
-     *
-     * Create HTTP server.
-     */
 
     try {
-        /**
-         * Create HTTP server.
-         */
-
-
         /**
          * Get port from environment and store in Express.
          */
 
         const port = process.env.PORT ||normalizePort('8080');
         app.set('port', port);
-        log(" Server Starting up ON", port, 'Topic Subscription');
+        logger(" Server Starting up ON", port, 'Topic Subscription');
         /**
          * Listen on provided port, on all network implementations.
          */
@@ -116,8 +128,8 @@ const setupExpress = async () => {
         server.listen(port,function () {
             const { address, port } = this.address();
             const server = `http://${address === '::' ? '0.0.0.0' : address}:${port}`;
-            log('\n\nServer Started ON:', '\x1b[36m\x1b[89m', server);
-            log('Press Ctrl+C to quit.');
+            logger('\n\nServer Started ON:', '\x1b[36m\x1b[89m', server);
+            logger('Press Ctrl+C to quit.');
             // log('\n\n\x1b[1m\x1b[31m Server Started ON:', '\x1b[36m\x1b[89m\x1b[4m', server, '\x1b[0m');
             // log('\x1b[1m\x1b[31m', 'Press Ctrl+C to quit.\n\x1b[0m');
         })
@@ -136,12 +148,12 @@ const setupExpress = async () => {
 
 
     } catch (err) {
-        log("Erorr here");
-        log(err);
+        logger("Erorr here");
+        logger(err);
         debug(err);
         process.exit(1)
     }
 };
-// start server
-setupWebSocket();
 setupExpress();
+// start server
+setupWebSocketio();

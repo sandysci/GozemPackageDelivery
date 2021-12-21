@@ -13,12 +13,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/sandysci/MatrixLeague"
+    "url": "https://github.com/sandysci/GozemPackageDelivery"
   },
   "keywords": [
-    "matrix",
-    "csv",
-    "heroku"
+    "gozem",
+    "delivery",
+    "package"
   ],
   "engines": {
     "node": "16.x"
@@ -38,6 +38,7 @@
     "mongoose-guid": "^2.0.1",
     "node-cache": "^5.1.2",
     "nodemon": "^2.0.12",
+    "socket.io": "^4.4.0",
     "ws": "^8.3.0"
   }
 }

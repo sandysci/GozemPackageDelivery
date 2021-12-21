@@ -1,6 +1,7 @@
 "use strict";
 const Delivery = require("./DeliveryModel");
 const Repository = require("../Repository");
+const {emit} = require("../../../index");
 
 
 class DeliveryRepository extends Repository{
@@ -39,6 +40,16 @@ class DeliveryRepository extends Repository{
     async updateDelivery(id,body){
         try {
             let data = await  this.updateOrCreate({_id: id}, body);
+            emit("delivery_updated",data);
+            return {data};
+        }catch (e) {
+            return  {error : e.message}
+        }
+    };
+    async updateByDeliveryId(id,body){
+        try {
+            let data = await  this.updateOrCreate({delivery_id: id}, body);
+            emit("delivery_updated",data);
             return {data};
         }catch (e) {
             return  {error : e.message}
